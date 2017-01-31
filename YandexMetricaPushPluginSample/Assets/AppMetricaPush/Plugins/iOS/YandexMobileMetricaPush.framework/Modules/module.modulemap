@@ -1,0 +1,6 @@
+framework module YandexMobileMetricaPush {
+  umbrella header "YandexMobileMetricaPush.h"
+
+  export *
+  module * { export * }
+}
