@@ -1,3 +1,10 @@
+/*
+ * Version for Unity
+ * © 2017 YANDEX
+ * You may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * https://yandex.com/legal/appmetrica_sdk_agreement/
+ */
 
 #import <Foundation/Foundation.h>
 #import <YandexMobileMetrica/YandexMobileMetrica.h>
@@ -28,15 +35,24 @@ static void ymp_initializeAppMetricaPushPlugin()
 {
     RECURSION_CHECK(return YES);
 
+    // Call the original method
+    BOOL result = [self ymp_application:application didFinishLaunchingWithOptions:launchOptions];
+
     if (launchOptions[UIApplicationLaunchOptionsRemoteNotificationKey] != nil) {
         // We should activate AppMetrica first to handle push notification
         ymp_ensureAppMetricaActivated();
     }
 
+    // Enable in-app push notifications handling in iOS 10
+    if ([UNUserNotificationCenter class] != nil) {
+        id<YMPUserNotificationCenterDelegate> delegate = [YMPYandexMetricaPush userNotificationCenterDelegate];
+        delegate.nextDelegate = [UNUserNotificationCenter currentNotificationCenter].delegate;
+        [UNUserNotificationCenter currentNotificationCenter].delegate = delegate;
+    }
+
     [YMPYandexMetricaPush handleApplicationDidFinishLaunchingWithOptions:launchOptions];
 
-    // Call the original method
-    return [self ymp_application:application didFinishLaunchingWithOptions:launchOptions];
+    return result;
 }
 
 - (void)ymp_application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
