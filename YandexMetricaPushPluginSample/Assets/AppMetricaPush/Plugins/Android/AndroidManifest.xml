@@ -9,8 +9,6 @@
   <uses-sdk android:minSdkVersion="14" android:targetSdkVersion="26"/>
 
   <!-- AppMetrica Permissions -->
-  <uses-permission android:name="android.permission.INTERNET"/>
-  <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
   <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
 
   <!-- Application -->
@@ -24,29 +22,9 @@
       </intent-filter>
     </activity>
 
-    <!-- AppMetrica Services and Receivers -->
-    <service android:enabled="true" android:exported="true" android:name="com.yandex.metrica.MetricaService" android:process=":Metrica">
-      <intent-filter>
-        <category android:name="android.intent.category.DEFAULT"/>
-        <action android:name="com.yandex.metrica.IMetricaService"/>
-        <data android:scheme="metrica"/>
-      </intent-filter>
-      <meta-data android:name="metrica:api:level" android:value="63"/>
-    </service>
-    <service android:enabled="true" android:exported="true" android:name="com.yandex.metrica.ConfigurationService" android:process=":Metrica" tools:ignore="ExportedService">
-      <intent-filter>
-        <action android:name="com.yandex.metrica.configuration.ACTION_START"/>
-      </intent-filter>
-      <meta-data android:name="metrica:configuration:api:level" android:value="1"/>
-    </service>
-    <receiver android:enabled="true" android:exported="true" android:name="com.yandex.metrica.MetricaEventHandler">
-      <intent-filter>
-        <action android:name="com.android.vending.INSTALL_REFERRER"/>
-      </intent-filter>
-    </receiver>
-
-    <!-- Your GCM Project Number -->
-    <meta-data android:name="ymp_gcm_project_number" android:value="number:gcm_number"/>
+    <!-- Your Firebase identificators -->
+    <meta-data android:name="ymp_gcm_default_sender_id" android:value="number:sender_id"/>
+    <meta-data android:name="ymp_firebase_default_app_id" android:value="app_id"/>
 
   </application>
 

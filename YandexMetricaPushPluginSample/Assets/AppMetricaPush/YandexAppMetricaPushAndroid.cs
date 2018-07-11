@@ -16,15 +16,15 @@ public class YandexMetricaPushAndroid : IYandexMetricaPush
 
     #region IYandexMetricaPush implementation
 
-    private AndroidJavaClass metricaPushClass = null;
-    private AndroidJavaObject metricaConfigStorageClass = null;
+    private readonly AndroidJavaClass metricaPushClass = new AndroidJavaClass ("com.yandex.metrica.push.YandexMetricaPush");
+    private AndroidJavaObject metricaConfigStorage = null;
 
     public void Initialize ()
     {
         using (var activityClass = new AndroidJavaClass ("com.unity3d.player.UnityPlayer")) {
             var playerActivityContext = activityClass.GetStatic<AndroidJavaObject> ("currentActivity");
 
-            metricaConfigStorageClass = new AndroidJavaObject ("com.yandex.metrica.push.unity.MetricaConfigStorage", playerActivityContext);
+            metricaConfigStorage = new AndroidJavaObject ("com.yandex.metrica.push.plugin.MetricaConfigStorage", playerActivityContext);
 
             AppMetrica.Instance.OnActivation += ProcessConfigurationUpdate;
 
@@ -33,27 +33,21 @@ public class YandexMetricaPushAndroid : IYandexMetricaPush
                 ProcessConfigurationUpdate (config.Value);
             }
 
-            metricaPushClass = new AndroidJavaClass ("com.yandex.metrica.push.YandexMetricaPush");
             metricaPushClass.CallStatic ("init", playerActivityContext);
         }
     }
 
     public string Token {
         get {
-            if (metricaPushClass != null) {
-                return metricaPushClass.CallStatic<string> ("getToken");
-            }
-            return null;
+            return metricaPushClass.CallStatic<string> ("getToken");
         }
     }
 
     public void ProcessConfigurationUpdate (YandexAppMetricaConfig config)
     {
-        using (var metricaClass = new AndroidJavaClass ("com.yandex.metrica.YandexMetrica")) {
-            var androidAppMetricaConfig = config.ToAndroidAppMetricaConfig (metricaClass);
-            if (androidAppMetricaConfig != null) {
-                metricaConfigStorageClass.Call ("saveConfig", androidAppMetricaConfig);
-            }
+        var androidAppMetricaConfig = config.ToAndroidAppMetricaConfig ();
+        if (androidAppMetricaConfig != null) {
+            metricaConfigStorage.Call ("saveConfig", androidAppMetricaConfig);
         }
     }
 
