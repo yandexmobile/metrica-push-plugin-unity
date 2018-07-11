@@ -19,9 +19,7 @@ public class YandexMetricaPushIOS : IYandexMetricaPush
     [DllImport ("__Internal")]
     private static extern void ymp_saveActivationConfigurationJSON (string configurationJSON);
 
-
-
-#region IYandexMetricaPush implementation
+    #region IYandexMetricaPush implementation
 
     public void Initialize ()
     {
@@ -52,9 +50,7 @@ public class YandexMetricaPushIOS : IYandexMetricaPush
         return BitConverter.ToString (data).Replace ("-", string.Empty);
     }
 
-
-
-#endregion
+    #endregion
 
 }
 
