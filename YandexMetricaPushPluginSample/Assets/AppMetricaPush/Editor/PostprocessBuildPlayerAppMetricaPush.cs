@@ -9,7 +9,9 @@
 using UnityEngine;
 using UnityEditor;
 using UnityEditor.Callbacks;
+#if UNITY_IOS
 using UnityEditor.iOS.Xcode;
+#endif
 using System.IO;
 using System.Collections;
 
@@ -27,6 +29,7 @@ public class PostprocessBuildPlayerAppMetricaPush
 	[PostProcessBuild]
 	public static void OnPostprocessBuild (BuildTarget buildTarget, string path)
 	{
+#if UNITY_IOS
 		if (buildTarget == BuildTarget.iOS) {
 			var projectPath = path + "/Unity-iPhone.xcodeproj/project.pbxproj";
 
@@ -41,5 +44,6 @@ public class PostprocessBuildPlayerAppMetricaPush
 
 			File.WriteAllText (projectPath, project.WriteToString ());
 		}
+#endif
 	}
 }
