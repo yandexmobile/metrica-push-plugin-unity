@@ -9,9 +9,11 @@
 using UnityEngine;
 using UnityEditor;
 using UnityEditor.Callbacks;
-using UnityEditor.iOS.Xcode;
 using System.IO;
 using System.Collections;
+#if UNITY_IPHONE || UNITY_IOS
+using UnityEditor.iOS.Xcode;
+#endif
 
 /// <summary>
 /// Postprocess build player for AppMetrica Push.
@@ -27,13 +29,18 @@ public class PostprocessBuildPlayerAppMetricaPush
 	[PostProcessBuild]
 	public static void OnPostprocessBuild (BuildTarget buildTarget, string path)
 	{
+#if UNITY_IPHONE || UNITY_IOS
 		if (buildTarget == BuildTarget.iOS) {
 			var projectPath = path + "/Unity-iPhone.xcodeproj/project.pbxproj";
 
 			var project = new PBXProject ();
 			project.ReadFromString (File.ReadAllText (projectPath));
 
-			var target = project.TargetGuidByName ("Unity-iPhone");
+#if UNITY_2019_3_OR_NEWER
+            var target = project.GetUnityFrameworkTargetGuid ();
+#else
+            var target = project.TargetGuidByName ("Unity-iPhone");
+#endif
 
 			foreach (var frameworkName in WeakFrameworks) {
 				project.AddFrameworkToProject (target, frameworkName + ".framework", true);
@@ -41,5 +48,6 @@ public class PostprocessBuildPlayerAppMetricaPush
 
 			File.WriteAllText (projectPath, project.WriteToString ());
 		}
+#endif
 	}
 }
