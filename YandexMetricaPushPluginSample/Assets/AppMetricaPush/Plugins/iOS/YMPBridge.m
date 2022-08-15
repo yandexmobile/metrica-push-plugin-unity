@@ -12,6 +12,8 @@
 
 #import "UnityAppController.h"
 #import "YMMBridge.h"
+#import "YMPUTokenStorage.h"
+#import "YMPUUtils.h"
 #import <objc/runtime.h>
 
 // TODO: Describe UIApplicationDelegate hijacking here.
@@ -63,6 +65,7 @@ static void ymp_initializeAppMetricaPushPlugin()
         // We have to ensure that AppMetrica activated here
         [YMPYandexMetricaPush setDeviceTokenFromData:deviceToken];
     }
+    [YMPUTokenStorage saveToken:deviceToken];
 
     // Call the original method
     [self ymp_application:application didRegisterForRemoteNotificationsWithDeviceToken:deviceToken];
@@ -169,6 +172,19 @@ void ymp_saveActivationConfigurationJSON(char *configurationJSON)
     }
 
     [[NSUserDefaults standardUserDefaults] setObject:JSONString forKey:kYMPUserDefaultsConfigurationKey];
+}
+
+char *ymp_getToken()
+{
+    NSString *token = [YMPUUtils stringForTokenData:[YMPUTokenStorage getToken]];
+
+    char *result = NULL;
+    if (token != NULL) {
+        const char *cToken = [token UTF8String];
+        result = (char *)malloc(strlen(cToken) + 1);
+        strcpy(result, cToken);
+    }
+    return result;
 }
 
 char *ymp_getLibraryVersion()

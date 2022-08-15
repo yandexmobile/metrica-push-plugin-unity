@@ -16,7 +16,8 @@ public class YandexMetricaPushAndroid : IYandexMetricaPush
 
     #region IYandexMetricaPush implementation
 
-    private readonly AndroidJavaClass metricaPushClass = new AndroidJavaClass ("com.yandex.metrica.push.YandexMetricaPush");
+    private readonly AndroidJavaClass metricaPushClass =
+        new AndroidJavaClass ("com.yandex.metrica.push.plugin.YandexMetricaPushWrapper");
 
     public void Initialize ()
     {

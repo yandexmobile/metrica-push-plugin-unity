@@ -7,21 +7,9 @@
  */
 
 using UnityEngine;
-using System.Collections;
 
 public class PushSampleSceneManager : MonoBehaviour
 {
-    
-    private void Start ()
-    {
-#if UNITY_IPHONE || UNITY_IOS
-		UnityEngine.iOS.NotificationServices.RegisterForNotifications (
-			UnityEngine.iOS.NotificationType.Alert |
-			UnityEngine.iOS.NotificationType.Badge |
-			UnityEngine.iOS.NotificationType.Sound, true);
-#endif
-    }
-
     private void initGUI ()
     {
         GUI.skin.button.fontSize = 40;

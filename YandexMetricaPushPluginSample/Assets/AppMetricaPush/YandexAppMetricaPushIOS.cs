@@ -6,11 +6,7 @@
  * https://yandex.com/legal/appmetrica_sdk_agreement/
  */
 
-using UnityEngine;
-using System.Collections;
 using System.Runtime.InteropServices;
-using System.Text;
-using System;
 
 #if UNITY_IPHONE || UNITY_IOS
 
@@ -18,6 +14,9 @@ public class YandexMetricaPushIOS : IYandexMetricaPush
 {
     [DllImport ("__Internal")]
     private static extern void ymp_saveActivationConfigurationJSON (string configurationJSON);
+
+    [DllImport ("__Internal")]
+    private static extern string ymp_getToken ();
 
     #region IYandexMetricaPush implementation
 
@@ -32,22 +31,14 @@ public class YandexMetricaPushIOS : IYandexMetricaPush
 
     public string Token {
         get {
-            return DeviceTokenString (UnityEngine.iOS.NotificationServices.deviceToken);
+            return ymp_getToken();
         }
     }
 
-    private void ProcessConfigurationUpdate (YandexAppMetricaConfig config)
+    private void ProcessConfigurationUpdate(YandexAppMetricaConfig config)
     {
         // Yandex AppMetrica Unity Plugin JSON Utils are used here.
-        ymp_saveActivationConfigurationJSON (YMMJSONUtils.JSONEncoder.Encode (config.ToHashtable ()));
-    }
-
-    private string DeviceTokenString (byte[] data)
-    {
-        if (data == null || data.Length == 0) {
-            return null;
-        }
-        return BitConverter.ToString (data).Replace ("-", string.Empty);
+        ymp_saveActivationConfigurationJSON(YMMJSONUtils.JSONEncoder.Encode(config.ToHashtable()));
     }
 
     #endregion

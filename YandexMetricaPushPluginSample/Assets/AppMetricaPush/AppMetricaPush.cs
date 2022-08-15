@@ -11,7 +11,7 @@ using System.Collections;
 
 public class AppMetricaPush : MonoBehaviour
 {
-    public const string VERSION = "1.0.0";
+    public const string VERSION = "1.1.0";
     
     private static bool _isInitialized = false;
 
